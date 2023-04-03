@@ -1,6 +1,10 @@
 import { Feather } from '@expo/vector-icons';
+import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+import { loginKeyAtom } from 'src/state/user';
+// import { storage } from 'src/utils/storage';
 
 type Props = {
   authPage: number;
@@ -9,8 +13,12 @@ type Props = {
 
 const AuthForm = ({ authPage, setDetailsPage }: Props) => {
   const [userKey, setUserKey] = useState('');
+  const setKey = useSetAtom(loginKeyAtom);
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    // storage.set('loginKey', data.userKey);
+    setKey(userKey);
+  };
 
   const handleRegister = () => {};
 
@@ -19,7 +27,11 @@ const AuthForm = ({ authPage, setDetailsPage }: Props) => {
       <TouchableOpacity onPress={() => setDetailsPage(false)}>
         <Feather name="arrow-left" size={24} color="black" />
       </TouchableOpacity>
-      <TextInput onChangeText={(text) => setUserKey(text)} style={styles.textInput} placeholder="Secret Key" />
+      <TextInput
+        onChangeText={(text) => setUserKey(text)}
+        style={styles.textInput}
+        placeholder="Secret/Public Key (Hex)"
+      />
 
       <TouchableOpacity style={styles.button} onPress={() => (authPage == 0 ? handleLogin() : handleRegister())}>
         <Text style={styles.buttonText}>{authPage == 0 ? 'Sign In' : 'Sign Up'}</Text>
