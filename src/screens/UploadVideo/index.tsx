@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 
-import { RootStackParamList } from 'src/constants/RootStackPrams';
+import { RootStackParamList } from 'src/constants/rootStackParams';
 
 interface Props extends StackScreenProps<RootStackParamList, 'UploadVideo'> {}
 

@@ -3,4 +3,5 @@ export type RootStackParamList = {
   Login: undefined;
   Record: undefined;
   UploadVideo: { source: string; sourceThumb?: string };
+  Profile: { id?: string };
 };

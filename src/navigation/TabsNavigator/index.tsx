@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 
 import HomeScreen from 'src/screens/Home';
+import ProfileScreen from 'src/screens/Profile';
 import RecordScreen from 'src/screens/Record';
 import { pubKeyAtom } from 'src/state/user';
 
@@ -46,7 +47,7 @@ const TabsNavigator = (props: Props) => {
       />
       <Tab.Screen
         name="Me"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
         }}

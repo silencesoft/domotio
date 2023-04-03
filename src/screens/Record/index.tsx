@@ -11,7 +11,7 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 import React, { useEffect, useState } from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { RootStackParamList } from 'src/constants/RootStackPrams';
+import { RootStackParamList } from 'src/constants/rootStackParams';
 
 type Props = {};
 
