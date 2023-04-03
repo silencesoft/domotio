@@ -13,11 +13,11 @@ type Props = {
 
 const AuthForm = ({ authPage, setDetailsPage }: Props) => {
   const [userKey, setUserKey] = useState('');
-  const setKey = useSetAtom(loginKeyAtom);
+  const setLoginKey = useSetAtom(loginKeyAtom);
 
   const handleLogin = () => {
     // storage.set('loginKey', data.userKey);
-    setKey(userKey);
+    setLoginKey(userKey);
   };
 
   const handleRegister = () => {};

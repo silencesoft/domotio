@@ -1,22 +1,12 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 
+import MainNavigator from 'src/navigation/MainNavigator';
 import MainProvider from 'src/providers/MainProvider';
-import LoginScreen from 'src/screens/Login';
 
 export default function App() {
   return (
     <MainProvider>
-      <LoginScreen />
+      <MainNavigator />
     </MainProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
