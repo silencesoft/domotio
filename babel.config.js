@@ -11,6 +11,10 @@ module.exports = function (api) {
           },
         },
       ],
+      '@babel/plugin-proposal-export-namespace-from',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
+      '@babel/plugin-proposal-optional-chaining',
+      'react-native-reanimated/plugin',
     ],
     env: {
       production: {

@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 
 import LoginScreen from 'src/screens/Login';
+import UploadVideoScreen from 'src/screens/UploadVideo';
 import { pubKeyAtom } from 'src/state/user';
 import TabsNavigator from '../TabsNavigator';
 
@@ -16,9 +17,12 @@ const MainNavigator = (props: Props) => {
   return (
     <Stack.Navigator>
       {!pubKey ? (
-        <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       ) : (
-        <Stack.Screen name="home" component={TabsNavigator} options={{ headerShown: false }} />
+        <>
+          <Stack.Screen name="Home" component={TabsNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name="UploadVideo" component={UploadVideoScreen} options={{ headerShown: false }} />
+        </>
       )}
     </Stack.Navigator>
   );

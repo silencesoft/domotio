@@ -7,7 +7,6 @@ export const loginKeyAtom = atomWithDefault<string>(async () => (await storage.g
 
 export const pubKeyAtom = atom<Promise<string>>(async (get) => {
   const privKey = await get(loginKeyAtom);
-  console.log('privKey', privKey);
 
   if (!privKey) {
     return '';

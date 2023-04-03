@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 
 import HomeScreen from 'src/screens/Home';
+import RecordScreen from 'src/screens/Record';
 import { pubKeyAtom } from 'src/state/user';
 
 type Props = {};
@@ -14,8 +15,7 @@ const TabsNavigator = (props: Props) => {
   const pubKey = useAtomValue(pubKeyAtom);
 
   return (
-    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="feed" shifting={false}
-    >
+    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="feed" shifting={false}>
       <Tab.Screen
         name="feed"
         component={HomeScreen}
@@ -32,7 +32,7 @@ const TabsNavigator = (props: Props) => {
       />
       <Tab.Screen
         name="Add"
-        component={HomeScreen}
+        component={RecordScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="plus-square" size={24} color={color} />,
         }}
