@@ -3,6 +3,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { useAtomValue } from 'jotai';
 import React from 'react';
 
+import FeedScreen from 'src/screens/Feed';
 import HomeScreen from 'src/screens/Home';
 import ProfileScreen from 'src/screens/Profile';
 import RecordScreen from 'src/screens/Record';
@@ -19,7 +20,7 @@ const TabsNavigator = (props: Props) => {
     <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="feed" shifting={false}>
       <Tab.Screen
         name="feed"
-        component={HomeScreen}
+        component={FeedScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
         }}

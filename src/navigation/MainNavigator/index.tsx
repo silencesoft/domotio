@@ -21,7 +21,12 @@ const MainNavigator = (props: Props) => {
       ) : (
         <>
           <Stack.Screen name="Home" component={TabsNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name="UploadVideo" component={UploadVideoScreen} options={{ headerShown: false }} />
+          <Stack.Screen
+            name="UploadVideo"
+            component={UploadVideoScreen}
+            initialParams={{ source: '', sourceThumb: '' }}
+            options={{ headerShown: false }}
+          />
         </>
       )}
     </Stack.Navigator>
