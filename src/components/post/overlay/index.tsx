@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import React, { useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     position: 'absolute',
     zIndex: 999,
-    bottom: 0,
+    bottom: Platform.OS === 'web' ? 100 : 0,
     paddingLeft: 20,
     paddingBottom: 20,
     paddingRight: 10,

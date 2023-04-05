@@ -1,7 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect, useRef } from 'react';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, View, useWindowDimensions } from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
 
 import PostSingle from 'src/components/post';
 import { RootStackParamList } from 'src/constants/rootStackParams';
@@ -10,18 +11,12 @@ import { currentPostAuthorAtom, postsAtom } from 'src/state/post';
 
 interface Props extends StackScreenProps<RootStackParamList, 'Feed'> {}
 
-interface RefObject {
-  play: () => void;
-  stop: () => void;
-}
-
-const FeedScreen = ({ route }: Props) => {
+const FeedScreen = ({ route, navigation }: Props) => {
   const setCurrentPostAuthor = useSetAtom(currentPostAuthorAtom);
   const profile = '';
-  const setCurrentUserProfileItemInView = undefined;
-  // const [posts, setPosts] = useState([]);
-  const mediaRefs = useRef<Array<RefObject>>([]);
   const posts = useAtomValue(postsAtom);
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
     if (profile) {
@@ -31,48 +26,32 @@ const FeedScreen = ({ route }: Props) => {
     }
   }, []);
 
-  const onViewableItemsChanged = useRef(({ changed }: any) => {
-    changed.forEach((element: any, index: number) => {
-      const cell = mediaRefs.current[index];
-      if (cell) {
-        if (element.isViewable) {
-          if (!profile) {
-            setCurrentPostAuthor(element.username);
-          }
-          cell.play();
-        } else {
-          cell.stop();
-        }
-      }
-    });
-  });
+  useEffect(() => {
+    setCurrentPostAuthor(posts[active].username);
+  }, [active]);
 
   const feedItemHeight = Dimensions.get('window').height - useMaterialNavBarHeight(!!profile);
 
-  const renderItem = ({ item, index }: { item: any; index: number }) => {
+  const renderItem = ({ index }: { index: number }) => {
     return (
       <View style={{ height: feedItemHeight, backgroundColor: 'black' }}>
-        <PostSingle item={item} ref={(PostSingleRef: any) => (mediaRefs.current[index] = PostSingleRef)} />
+        <PostSingle item={posts[index]} active={active === index} />
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={posts}
-        windowSize={4}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        removeClippedSubviews
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 0,
-        }}
-        renderItem={renderItem}
-        pagingEnabled
-        keyExtractor={(item) => item.id}
-        decelerationRate={'normal'}
-        onViewableItemsChanged={onViewableItemsChanged.current}
+      <Carousel
+        loop={false}
+        width={windowWidth}
+        height={windowHeight}
+        vertical={true}
+        autoPlay={false}
+        data={[...new Array(2).keys()]}
+        scrollAnimationDuration={1000}
+        onSnapToItem={(index) => setActive(index)}
+        renderItem={({ index }) => renderItem({ index })}
       />
     </View>
   );
