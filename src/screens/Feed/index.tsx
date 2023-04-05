@@ -1,21 +1,26 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { useEffect, useRef } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
-import PostSingle from 'src/components/post';
 
+import PostSingle from 'src/components/post';
 import { RootStackParamList } from 'src/constants/rootStackParams';
 import useMaterialNavBarHeight from 'src/hooks/useMaterialNavBarHeight';
-import { postsAtom } from 'src/state/post';
+import { currentPostAuthorAtom, postsAtom } from 'src/state/post';
 
 interface Props extends StackScreenProps<RootStackParamList, 'Feed'> {}
 
+interface RefObject {
+  play: () => void;
+  stop: () => void;
+}
+
 const FeedScreen = ({ route }: Props) => {
-  // const { setCurrentUserProfileItemInView, creator, profile } = route.params;
+  const setCurrentPostAuthor = useSetAtom(currentPostAuthorAtom);
   const profile = '';
   const setCurrentUserProfileItemInView = undefined;
   // const [posts, setPosts] = useState([]);
-  const mediaRefs = useRef([]);
+  const mediaRefs = useRef<Array<RefObject>>([]);
   const posts = useAtomValue(postsAtom);
 
   useEffect(() => {
@@ -26,13 +31,13 @@ const FeedScreen = ({ route }: Props) => {
     }
   }, []);
 
-  const onViewableItemsChanged = useRef(({ changed }) => {
-    changed.forEach((element) => {
-      const cell = mediaRefs.current[element.key];
+  const onViewableItemsChanged = useRef(({ changed }: any) => {
+    changed.forEach((element: any, index: number) => {
+      const cell = mediaRefs.current[index];
       if (cell) {
         if (element.isViewable) {
           if (!profile) {
-            // setCurrentUserProfileItemInView(element.item.creator);
+            setCurrentPostAuthor(element.username);
           }
           cell.play();
         } else {
@@ -44,10 +49,10 @@ const FeedScreen = ({ route }: Props) => {
 
   const feedItemHeight = Dimensions.get('window').height - useMaterialNavBarHeight(!!profile);
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
     return (
       <View style={{ height: feedItemHeight, backgroundColor: 'black' }}>
-        <PostSingle item={item} ref={(PostSingleRef) => (mediaRefs.current[item.id] = PostSingleRef)} />
+        <PostSingle item={item} ref={(PostSingleRef: any) => (mediaRefs.current[index] = PostSingleRef)} />
       </View>
     );
   };

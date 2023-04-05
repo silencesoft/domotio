@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useAtomValue } from 'jotai';
 import React from 'react';
 
+import FeedScreen from 'src/screens/Feed';
 import LoginScreen from 'src/screens/Login';
 import UploadVideoScreen from 'src/screens/UploadVideo';
 import { pubKeyAtom } from 'src/state/user';
@@ -27,6 +28,7 @@ const MainNavigator = (props: Props) => {
             initialParams={{ source: '', sourceThumb: '' }}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="FeedItem" component={FeedScreen} options={{ headerShown: false }} />
         </>
       )}
     </Stack.Navigator>

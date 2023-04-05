@@ -3,11 +3,10 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { useAtomValue } from 'jotai';
 import React from 'react';
 
-import FeedScreen from 'src/screens/Feed';
-import HomeScreen from 'src/screens/Home';
 import ProfileScreen from 'src/screens/Profile';
 import RecordScreen from 'src/screens/Record';
 import { pubKeyAtom } from 'src/state/user';
+import FeedNavigator from '../FeedNavigator';
 
 type Props = {};
 
@@ -17,21 +16,21 @@ const TabsNavigator = (props: Props) => {
   const pubKey = useAtomValue(pubKeyAtom);
 
   return (
-    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="feed" shifting={false}>
+    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="Profile" shifting={false}>
       <Tab.Screen
-        name="feed"
-        component={FeedScreen}
+        name="Feed"
+        component={FeedNavigator}
         options={{
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Discover"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="search" size={24} color={color} />,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Add"
         component={RecordScreen}
@@ -39,20 +38,20 @@ const TabsNavigator = (props: Props) => {
           tabBarIcon: ({ color }) => <Feather name="plus-square" size={24} color={color} />,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Inbox"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="message-square" size={24} color={color} />,
         }}
-      />
+      /> */}
       <Tab.Screen
-        name="Me"
+        name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
         }}
-        initialParams={{ initialUserId: pubKey }}
+        initialParams={{ embed: false }}
       />
     </Tab.Navigator>
   );

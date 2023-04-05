@@ -13,7 +13,7 @@ export const getFeed = async () => {
     },
     {
       id: 1,
-      username: '@matheuscastroweb',
+      username: '@matheuscastroweb2',
       tags: '#reactnative #testvideo #tiktok #git #development #github #clone #react',
       music: 'HBO GO now works with Chromecast',
       likes: 8411,

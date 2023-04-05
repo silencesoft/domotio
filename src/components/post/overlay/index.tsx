@@ -30,7 +30,7 @@ const PostSingleOverlay = ({ user, post }: Props) => {
       </View>
 
       <View style={styles.leftContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('profileOther', { initialUserId: user?.uid })}>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile', { embed: true })}>
           <Image style={styles.avatar} source={{ uri: user?.photoURL }} />
         </TouchableOpacity>
 

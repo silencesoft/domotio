@@ -3,6 +3,7 @@ export type RootStackParamList = {
   Login: undefined;
   Record: undefined;
   UploadVideo: { source: string; sourceThumb?: string };
-  Profile: { id?: string };
-  Feed: { setCurrentUserProfileItemInView: () => void; creator: string; profile: string };
+  Profile: { embed?: boolean };
+  Feed: { creator: string; profile: string };
+  FeedItem: { creator: string; profile: string };
 };

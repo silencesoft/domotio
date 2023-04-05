@@ -1,3 +1,4 @@
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import React, { Suspense } from 'react';
 
 import RouteProvider from './RouteProvider';
@@ -8,7 +9,7 @@ type Props = { children: JSX.Element };
 const MainProvider = ({ children }: Props) => {
   return (
     <StateProvider>
-      <Suspense fallback={<>Loading</>}>
+      <Suspense fallback={<ActivityIndicator size="large" />}>
         <RouteProvider>{children}</RouteProvider>
       </Suspense>
     </StateProvider>
