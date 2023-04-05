@@ -16,7 +16,7 @@ const TabsNavigator = (props: Props) => {
   const pubKey = useAtomValue(pubKeyAtom);
 
   return (
-    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="Profile" shifting={false}>
+    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="Feed" shifting={false}>
       <Tab.Screen
         name="Feed"
         component={FeedNavigator}

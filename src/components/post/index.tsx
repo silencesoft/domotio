@@ -73,6 +73,7 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
           usePoster
           posterSource={{ uri: item.media }}
           posterStyle={{ resizeMode: 'cover', height: '100%' }}
+          videoStyle={{ height: '100%', width: 'auto' }}
           source={{ uri: item.media }}
           rate={1.0}
           volume={1.0}
