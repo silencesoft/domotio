@@ -1,6 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-paper';
+
+import { useTheme } from 'src/providers/ThemeProvider';
 
 type Props = {
   authPage: number;
@@ -9,13 +12,15 @@ type Props = {
 };
 
 const AuthMenu = ({ authPage, setAuthPage, setDetailsPage }: Props) => {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.container}>
       <View style={styles.containerMain}>
         <Text style={styles.headerText}>{authPage == 0 ? 'sign in' : 'sign up'}</Text>
         <TouchableOpacity style={styles.providerButton} onPress={() => setDetailsPage(true)}>
-          <Feather name="user" size={24} color="black" />
-          <Text style={styles.providerButtonText}>Use Public / Secret Key</Text>
+          <Feather name="user" size={24} color={theme.colors.primary} />
+          <Text style={styles.providerButtonText}>{authPage == 0 ? 'Use Public / Secret Key' : 'Create Key'}</Text>
           <View />
         </TouchableOpacity>
       </View>
@@ -52,7 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
     marginBottom: 25,
-    color: 'darkslategray',
+    // color: 'darkslategray',
     textAlign: 'center',
   },
   providerButton: {
@@ -69,7 +74,7 @@ const styles = StyleSheet.create({
   },
 
   containerBottomButton: {
-    backgroundColor: 'ghostwhite',
+    // backgroundColor: 'ghostwhite',
     padding: 20,
     alignItems: 'center',
     borderStyle: 'solid',

@@ -1,7 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput } from 'react-native-paper';
+import { useTheme } from 'src/providers/ThemeProvider';
 
 import { loginKeyAtom } from 'src/state/user';
 // import { storage } from 'src/utils/storage';
@@ -14,6 +16,7 @@ type Props = {
 const AuthForm = ({ authPage, setDetailsPage }: Props) => {
   const [userKey, setUserKey] = useState('');
   const setLoginKey = useSetAtom(loginKeyAtom);
+  const { theme } = useTheme();
 
   const handleLogin = () => {
     // storage.set('loginKey', data.userKey);
@@ -25,7 +28,7 @@ const AuthForm = ({ authPage, setDetailsPage }: Props) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setDetailsPage(false)}>
-        <Feather name="arrow-left" size={24} color="black" />
+        <Feather name="arrow-left" size={24} color={theme.colors.primary} />
       </TouchableOpacity>
       <TextInput
         onChangeText={(text) => setUserKey(text)}
@@ -55,6 +58,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginTop: 20,
+    minHeight: 0,
   },
   button: {
     marginTop: 80,

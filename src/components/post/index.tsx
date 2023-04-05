@@ -2,6 +2,7 @@ import { ResizeMode, Video } from 'expo-av';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { useIsFocused } from '@react-navigation/native';
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
 import PostSingleOverlay from './overlay';
@@ -17,6 +18,7 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
   const [play, setPlay] = useState(active);
   const videoRef = useRef<Video | null>(null);
   const user = {} as User;
+  const isFocused = useIsFocused();
 
   Animated.loop(
     Animated.timing(spinValue, {
@@ -55,6 +57,13 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
       }
     }
   }, [play, videoRef]);
+
+  useEffect(() => {
+    if (!isFocused && videoRef) {
+      setPlay(false);
+      videoRef.current?.pauseAsync();
+    }
+  }, [isFocused]);
 
   return (
     <>
