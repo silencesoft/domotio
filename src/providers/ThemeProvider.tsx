@@ -78,3 +78,5 @@ export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) =>
     </PaperProvider>
   );
 };
+
+export default ThemeContextProvider;

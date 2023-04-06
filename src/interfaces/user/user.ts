@@ -1,6 +1,3 @@
-export interface User {
-  uid: string;
-  displayName: string;
-  username: string;
-  photoURL: string;
-}
+import { Metadata } from 'nostr-react';
+
+export type User = Metadata & { npub: string; id?: string };

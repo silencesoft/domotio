@@ -1,22 +1,29 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 import { User } from 'src/interfaces/user/user';
+import { useTheme } from 'src/providers/ThemeProvider';
 
 type Props = {
   user: User;
 };
 
 const ProfileNavBar = ({ user }: Props) => {
+  const { theme } = useTheme();
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity>
-        <Feather name="search" size={20} />
+        <Feather name="search" size={20} color={theme.colors.primary} />
       </TouchableOpacity>
-      <Text style={styles.text}>{user.displayName}</Text>
+      <Text style={styles.text}>{user.display_name || `@${user.name}`}</Text>
       <TouchableOpacity>
-        <Feather name="menu" size={24} />
+        <Feather name="menu" size={24} color={theme.colors.primary} />
       </TouchableOpacity>
     </View>
   );
@@ -34,7 +41,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: 'black',
     flex: 1,
     textAlign: 'center',
     fontWeight: 'bold',

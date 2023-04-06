@@ -77,13 +77,13 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
           ref={videoRef}
           style={styles.container}
           resizeMode={ResizeMode.COVER}
-          shouldPlay={false}
+          shouldPlay={true}
           isLooping
           usePoster
-          posterSource={{ uri: item.media }}
+          posterSource={{ uri: item.video }}
           posterStyle={{ resizeMode: 'cover', height: '100%' }}
           videoStyle={{ height: '100%', width: 'auto' }}
-          source={{ uri: item.media }}
+          source={{ uri: item.video }}
           rate={1.0}
           volume={1.0}
           isMuted={false}

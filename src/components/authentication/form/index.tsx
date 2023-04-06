@@ -6,7 +6,7 @@ import { Text, TextInput } from 'react-native-paper';
 import { useTheme } from 'src/providers/ThemeProvider';
 
 import { loginKeyAtom } from 'src/state/user';
-// import { storage } from 'src/utils/storage';
+import { storage } from 'src/utils/storage';
 
 type Props = {
   authPage: number;
@@ -19,7 +19,7 @@ const AuthForm = ({ authPage, setDetailsPage }: Props) => {
   const { theme } = useTheme();
 
   const handleLogin = () => {
-    // storage.set('loginKey', data.userKey);
+    storage.set('loginKey', userKey);
     setLoginKey(userKey);
   };
 
@@ -30,11 +30,7 @@ const AuthForm = ({ authPage, setDetailsPage }: Props) => {
       <TouchableOpacity onPress={() => setDetailsPage(false)}>
         <Feather name="arrow-left" size={24} color={theme.colors.primary} />
       </TouchableOpacity>
-      <TextInput
-        onChangeText={(text) => setUserKey(text)}
-        style={styles.textInput}
-        placeholder="Secret/Public Key (Hex)"
-      />
+      <TextInput onChangeText={(text) => setUserKey(text)} style={styles.textInput} placeholder="Secret Key (Hex)" />
 
       <TouchableOpacity style={styles.button} onPress={() => (authPage == 0 ? handleLogin() : handleRegister())}>
         <Text style={styles.buttonText}>{authPage == 0 ? 'Sign In' : 'Sign Up'}</Text>

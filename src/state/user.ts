@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
+import { getPublicKey } from 'nostr-tools';
 
 import { storage } from 'src/utils/storage';
 
@@ -12,5 +13,5 @@ export const pubKeyAtom = atom<Promise<string>>(async (get) => {
     return '';
   }
 
-  return privKey;
+  return getPublicKey(privKey);
 });

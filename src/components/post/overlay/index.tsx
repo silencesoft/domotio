@@ -1,7 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
+import { useProfile } from 'nostr-react';
 import React, { useState } from 'react';
-import { Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Avatar } from 'react-native-paper';
+import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
 
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
@@ -17,6 +20,9 @@ const PostSingleOverlay = ({ user, post }: Props) => {
     state: false,
     counter: post.likesCount,
   });
+  const { data: userData } = useProfile({
+    pubkey: post.author,
+  });
 
   const handleUpdateLike = (currentLikeState: { state: boolean; counter: number }): void => {
     throw new Error('Function not implemented.');
@@ -24,14 +30,18 @@ const PostSingleOverlay = ({ user, post }: Props) => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text style={styles.displayName}>{user?.displayName}</Text>
-        <Text style={styles.description}>{post.description}</Text>
+      <View style={{ maxWidth: '50%' }}>
+        <Text style={styles.displayName}>@{userData?.name}</Text>
+        <Text style={styles.description}>{post.content}</Text>
       </View>
 
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { embed: true })}>
-          <Image style={styles.avatar} source={{ uri: user?.photoURL }} />
+          {userData?.picture ? (
+            <Avatar.Image source={userData?.picture as AvatarImageSource} size={46} style={styles.avatar} />
+          ) : (
+            <Avatar.Icon icon="account" size={46} style={styles.avatar} />
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton} onPress={() => handleUpdateLike(currentLikeState)}>
@@ -67,10 +77,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+    textShadow: '3px 3px black',
   },
   description: {
     marginTop: 10,
     color: 'white',
+    textShadow: '3px 3px black',
   },
   avatar: {
     height: 50,

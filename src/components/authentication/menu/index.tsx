@@ -20,7 +20,7 @@ const AuthMenu = ({ authPage, setAuthPage, setDetailsPage }: Props) => {
         <Text style={styles.headerText}>{authPage == 0 ? 'sign in' : 'sign up'}</Text>
         <TouchableOpacity style={styles.providerButton} onPress={() => setDetailsPage(true)}>
           <Feather name="user" size={24} color={theme.colors.primary} />
-          <Text style={styles.providerButtonText}>{authPage == 0 ? 'Use Public / Secret Key' : 'Create Key'}</Text>
+          <Text style={styles.providerButtonText}>{authPage == 0 ? 'Use Secret Key' : 'Create Secret Key'}</Text>
           <View />
         </TouchableOpacity>
       </View>

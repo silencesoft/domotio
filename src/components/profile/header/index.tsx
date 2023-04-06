@@ -1,9 +1,10 @@
-import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
+import { nip19 } from 'nostr-tools';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Avatar } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Avatar, Text } from 'react-native-paper';
+import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
 
 import { User } from 'src/interfaces/user/user';
 import { pubKeyAtom } from 'src/state/user';
@@ -15,15 +16,20 @@ type Props = {
 const ProfileHeader = ({ user }: Props) => {
   const navigation = useNavigation();
   const currentUser = useAtomValue(pubKeyAtom);
+  const profileId = nip19.decode(user.npub).toString();
 
   const isFollowing = true; // useFollowing(firebase.auth().currentUser.uid, user.uid).data;
   // const isFollowingMutation = useFollowingMutation();
+
+  if (!user) {
+    return <></>;
+  }
 
   const renderFollowButton = () => {
     if (isFollowing) {
       return (
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={buttonStyles.grayOutlinedButton}
             onPress={() => navigation.navigate('chatSingle', { contactId: user.uid })}
           >
@@ -37,7 +43,7 @@ const ProfileHeader = ({ user }: Props) => {
             }
           >
             <Feather name="user-check" size={20} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       );
     } else {
@@ -57,8 +63,12 @@ const ProfileHeader = ({ user }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Avatar.Icon size={80} icon={'account'} />
-      <Text style={styles.emailText}>{user.username}</Text>
+      {user?.picture ? (
+        <Avatar.Image source={user?.picture as AvatarImageSource} size={80} />
+      ) : (
+        <Avatar.Icon size={80} icon={'account'} />
+      )}
+      <Text style={styles.emailText}>@{user.name}</Text>
       <View style={styles.counterContainer}>
         <View style={styles.counterItemContainer}>
           <Text style={styles.counterNumberText}>0</Text>
@@ -73,7 +83,7 @@ const ProfileHeader = ({ user }: Props) => {
           <Text style={styles.counterLabelText}>Likes</Text>
         </View>
       </View>
-      {currentUser === user.uid ? (
+      {currentUser === profileId ? (
         <TouchableOpacity style={buttonStyles.grayOutlinedButton} onPress={() => navigation.navigate('editProfile')}>
           <Text style={buttonStyles.grayOutlinedButtonText}>Edit Profile</Text>
         </TouchableOpacity>
@@ -97,6 +107,7 @@ const styles = StyleSheet.create({
   counterContainer: {
     paddingBottom: 20,
     flexDirection: 'row',
+    gap: 30,
   },
   counterItemContainer: {
     flex: 1,
