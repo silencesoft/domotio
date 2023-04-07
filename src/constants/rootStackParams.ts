@@ -4,6 +4,6 @@ export type RootStackParamList = {
   Record: undefined;
   UploadVideo: { source: string; sourceThumb?: string };
   Profile: { embed?: boolean };
-  Feed: { creator: string; profile: string };
-  FeedItem: { creator: string; profile: string };
+  Feed: { currentItem: number; profile: boolean };
+  FeedItem: { currentItem: number; profile: boolean };
 };

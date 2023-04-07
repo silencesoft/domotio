@@ -3,20 +3,22 @@ import React, { useEffect } from 'react';
 import { Dimensions, View } from 'react-native';
 
 import PostSingle from 'src/components/post';
-import { postsAtom } from 'src/state/nostr';
+import { postsAtom, profilePostsAtom } from 'src/state/nostr';
 import { currentPostAuthorAtom } from 'src/state/post';
 
-const RenderItem = ({ active, index }: { active: number; index: number }) => {
+const RenderItem = ({ active, index, profile }: { active: number; index: number; profile: boolean }) => {
   const setCurrentPostAuthor = useSetAtom(currentPostAuthorAtom);
   const posts = useAtomValue(postsAtom);
+  const profilePosts = useAtomValue(profilePostsAtom);
+  const items = profile ? profilePosts : posts;
 
   useEffect(() => {
     if (active === index) {
-      setCurrentPostAuthor(posts[active].author);
+      setCurrentPostAuthor(items[active].author);
     }
   }, [active]);
 
-  if (!posts[index]) {
+  if (!posts[index] && !profilePosts[index]) {
     return <></>;
   }
 
@@ -24,7 +26,7 @@ const RenderItem = ({ active, index }: { active: number; index: number }) => {
 
   return (
     <View style={{ height: feedItemHeight, backgroundColor: 'black' }}>
-      <PostSingle item={posts[index]} active={active === index} />
+      <PostSingle item={items[index]} active={active === index} />
     </View>
   );
 };

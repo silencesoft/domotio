@@ -6,6 +6,7 @@ import { ActivityIndicator } from 'react-native-paper';
 
 import Profile from 'src/components/profile';
 import { RootStackParamList } from 'src/constants/rootStackParams';
+import { useGetPosts } from 'src/hooks/useGetPosts';
 import { currentPostAuthorAtom } from 'src/state/post';
 
 interface Props extends StackScreenProps<RootStackParamList, 'Profile'> {}

@@ -6,27 +6,29 @@ import { defaultFilter } from 'src/constants/defaultValues';
 import { NostrKind } from 'src/constants/nostr';
 import { Filter } from 'src/interfaces/nostr/filter';
 import { Post } from 'src/interfaces/post/post';
-import { filterAtom, postsAtom, tagsAtom, userContactsAtom } from 'src/state/nostr';
+import { postsAtom, profilePostsAtom, tagsAtom, userContactsAtom } from 'src/state/nostr';
 
 type Props = {
   filter?: Filter;
+  author?: boolean;
 };
 
-export const useGetPosts = ({ filter = defaultFilter }: Props) => {
+export const useGetPosts = ({ filter = defaultFilter, author = false }: Props) => {
   const [posts, setPosts] = useAtom(postsAtom);
+  const [authorPosts, setAuthorPosts] = useAtom(profilePostsAtom);
   const setTags = useSetAtom(tagsAtom);
-  const setFilter = useSetAtom(filterAtom);
   const authors: string[] = useAtomValue(userContactsAtom);
   const now = useRef(new Date());
   const event: any = {
     filter: {
-      // authors,
+      authors,
       until: dateToUnix(now.current),
       kinds: [NostrKind.ShortVideo],
-      // limit: 5,
+      limit: 10,
     },
   };
-  setFilter(filter);
+  const page = 0;
+  // setFilter(filter);
 
   if (filter?.type) {
     let type = '';
@@ -64,7 +66,9 @@ export const useGetPosts = ({ filter = defaultFilter }: Props) => {
       const eRefs = event.tags.filter((tag) => tag[0] === 'e');
       const pRefs = event.tags.filter((tag) => tag[0] === 'p');
       list = [...list, ...tags.map((tag) => tag[1].toLowerCase())];
-      const exist = posts.some((post) => post.id === event.id);
+      const exist = !author
+        ? posts.some((post) => post.id === event.id)
+        : authorPosts.some((post) => post.id === event.id);
 
       if (!exist)
         data.push({
@@ -87,16 +91,22 @@ export const useGetPosts = ({ filter = defaultFilter }: Props) => {
         });
     });
 
-    setTags(list.filter((item, index) => list.indexOf(item) === index));
+    if (!author) {
+      setTags(list.filter((item, index) => list.indexOf(item) === index));
+    }
 
     if (!isLoading) {
       if (data.length) {
-        setPosts([...posts, ...data]);
+        if (!author) {
+          setPosts([...(page === 0 ? [] : posts), ...data]);
+        } else {
+          setAuthorPosts([...(page === 0 ? [] : authorPosts), ...data]);
+        }
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventsString, filter.value, isLoading]);
 
-  return { posts, isLoading };
+  return { authorPosts, posts, isLoading };
 };

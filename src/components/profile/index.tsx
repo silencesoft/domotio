@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileHeader from 'src/components/profile/header';
 import ProfileNavBar from 'src/components/profile/navBar';
 import ProfilePostList from 'src/components/profile/postList';
+import { useGetPosts } from 'src/hooks/useGetPosts';
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
 import { profilePostsAtom } from 'src/state/nostr';
@@ -23,6 +24,8 @@ const Profile = ({ embed }: Props) => {
   const { data: userData } = useProfile({
     pubkey: pubkey || '',
   });
+
+  useGetPosts({ filter: { type: 'author', value: pubkey || '' }, author: true });
 
   if (!userData) {
     return <View style={styles.container}></View>;

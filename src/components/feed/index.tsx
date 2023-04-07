@@ -1,29 +1,25 @@
 import { useAtomValue } from 'jotai';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 import { useGetPosts } from 'src/hooks/useGetPosts';
-import { postsAtom } from 'src/state/nostr';
+import { postsAtom, profilePostsAtom } from 'src/state/nostr';
 import RenderItem from './item';
 
-type Props = {};
+type Props = {
+  profile: boolean;
+  currentItem: number;
+};
 
-const Feed = (props: Props) => {
-  const profile = '';
+const Feed = ({ profile = false, currentItem = 0 }: Props) => {
   const posts = useAtomValue(postsAtom);
+  const profilePosts = useAtomValue(profilePostsAtom);
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(currentItem);
+  const count = profile ? profilePosts.length : posts.length;
 
   useGetPosts({});
-
-  useEffect(() => {
-    if (profile) {
-      // getPostsByUserId(creator).then(setPosts);
-    } else {
-      // getFeed().then(setPosts);
-    }
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -33,10 +29,11 @@ const Feed = (props: Props) => {
         height={windowHeight}
         vertical={true}
         autoPlay={false}
-        data={[...new Array(posts.length).keys()]}
+        data={[...new Array(count).keys()]}
+        defaultIndex={active}
         scrollAnimationDuration={1000}
         onSnapToItem={(index) => setActive(index)}
-        renderItem={({ index }) => RenderItem({ index, active })}
+        renderItem={({ index }) => RenderItem({ index, active, profile })}
       />
     </View>
   );

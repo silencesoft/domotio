@@ -12,10 +12,14 @@ interface Props extends StackScreenProps<RootStackParamList, 'Feed'> {}
 
 const FeedScreen = ({ route, navigation }: Props) => {
   const userContacts = useAtomValue(userContactsAtom);
+  const profile = route?.params?.profile;
+  const currentItem = route?.params?.currentItem;
 
   return (
     <View style={styles.container}>
-      <Suspense fallback={<ActivityIndicator size={'large'} />}>{!!userContacts.length && <FeedList />}</Suspense>
+      <Suspense fallback={<ActivityIndicator size={'large'} />}>
+        {!!userContacts.length && <FeedList profile={profile} currentItem={currentItem} />}
+      </Suspense>
     </View>
   );
 };

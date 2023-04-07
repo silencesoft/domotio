@@ -49,10 +49,10 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
   useEffect(() => {
     if (videoRef) {
       if (play) {
-        setPlay(true);
+        // setPlay(true);
         videoRef.current?.playAsync();
       } else {
-        setPlay(false);
+        // setPlay(false);
         videoRef.current?.pauseAsync();
       }
     }
@@ -67,7 +67,7 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
 
   return (
     <>
-      <PostSingleOverlay user={user} post={item} />
+      <PostSingleOverlay user={user} post={item} play={play} />
       <TouchableOpacity
         activeOpacity={0.8}
         style={{ minWidth: '100%', minHeight: '100%' }}
@@ -77,12 +77,19 @@ const PostSingle = forwardRef(({ item, active }: Props, parentRef) => {
           ref={videoRef}
           style={styles.container}
           resizeMode={ResizeMode.COVER}
-          shouldPlay={true}
+          shouldPlay={active}
           isLooping
           usePoster
           posterSource={{ uri: item.video }}
           posterStyle={{ resizeMode: 'cover', height: '100%' }}
-          videoStyle={{ height: '100%', width: 'auto' }}
+          videoStyle={{
+            height: '100%',
+            width: 'auto',
+            marginTop: 0,
+            marginLeft: 'auto',
+            marginBottom: 0,
+            marginRight: 'auto',
+          }}
           source={{ uri: item.video }}
           rate={1.0}
           volume={1.0}

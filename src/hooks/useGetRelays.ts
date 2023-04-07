@@ -32,7 +32,7 @@ export const useGetRelays = ({ pubkey }: Props) => {
       });
 
       if (!isLoading) {
-        data.push({relay: 'ws://127.0.0.1:8080'});
+        data.push({relay: 'ws://192.168.1.225:8080'});
         setRelays(data);
         setUserRelays(true);
       }
