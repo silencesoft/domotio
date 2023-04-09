@@ -16,13 +16,15 @@ const TabsNavigator = (props: Props) => {
   const pubKey = useAtomValue(pubKeyAtom);
 
   return (
-    <Tab.Navigator barStyle={{ backgroundColor: 'black' }} initialRouteName="Feed" shifting={false}>
+    <Tab.Navigator
+      style={{ overflow: 'visible' }}
+      barStyle={{ backgroundColor: 'rgba(0,0,0,0)', position: 'absolute' }} initialRouteName="FeedNavigator" shifting={false}>
       <Tab.Screen
-        name="Feed"
+        name="FeedNavigator"
         component={FeedNavigator}
         options={{
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
-        }}
+	}}
       />
       {/* <Tab.Screen
         name="Discover"

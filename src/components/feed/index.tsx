@@ -16,7 +16,7 @@ const Feed = ({ profile = false, currentItem = 0 }: Props) => {
   const posts = useAtomValue(postsAtom);
   const profilePosts = useAtomValue(profilePostsAtom);
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const [active, setActive] = useState(currentItem);
+  const [active, setActive] = useState(currentItem < posts.length ? currentItem : 0);
   const count = profile ? profilePosts.length : posts.length;
 
   useGetPosts({});

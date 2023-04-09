@@ -1,8 +1,8 @@
 import { ResizeMode, Video } from 'expo-av';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Platform, StyleSheet, TouchableOpacity } from 'react-native';
-
 import { useIsFocused } from '@react-navigation/native';
+
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
 import PostSingleOverlay from './overlay';

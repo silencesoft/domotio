@@ -64,7 +64,7 @@ const ProfileHeader = ({ user }: Props) => {
   return (
     <View style={styles.container}>
       {user?.picture ? (
-        <Avatar.Image source={user?.picture as AvatarImageSource} size={80} />
+        <Avatar.Image source={{uri: user?.picture}} size={80} />
       ) : (
         <Avatar.Icon size={80} icon={'account'} />
       )}

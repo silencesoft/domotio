@@ -3,16 +3,18 @@ import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useProfile } from 'nostr-react';
 import { nip19 } from 'nostr-tools';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, Dimensions, Easing, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
 import { useRemark } from 'react-remark';
+import React from 'react';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
 import { useUpdateContent } from 'src/hooks/useUpdateContent';
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
+import PostContent from './content';
 
 type Props = {
   user: User;
@@ -51,47 +53,25 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
     outputRange: ['0deg', '360deg'],
   });
 
-  let content = post.content;
-  let pRefs = post.pRefs || [];
-  const [reactContent, setMarkdownSource] = useRemark();
-  pRefs?.forEach((pRef) => {
-    const search = `#[${pRef.pos}]`;
-
-    content = content.replace(search, `[${pRef.value}](nostr:${nip19.npubEncode(pRef.value)})`);
-  });
-
-  const profiles = content.match(/npub\w+/gi);
-
-  profiles?.forEach((profile) => {
-    const user = nip19.decode(profile.replace('@', ''));
-
-    content = content.replace(profile, `[${user.data}](nostr:${profile.replace('@', '')})`);
-
-    pRefs.push({ pos: 0, value: user.data.toString() });
-  });
-
-  const [output, setOutput] = useState(content);
-
-  useUpdateContent({ output, setOutput, pRefs });
-
-  useEffect(() => {
-    setMarkdownSource(output);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [output]);
+  const content = post.content;
+  const pRefs = post.pRefs || [];
 
   return (
     <View style={styles.container}>
       <View style={{ maxWidth: '50%' }}>
         <Text style={styles.displayName}>@{userData?.name}</Text>
-        <Text style={[styles.description, { overflowWrap: 'break-word' }]}>
-          {reactContent} {post.tags.map((tag) => `#${tag} `)}
-        </Text>
+        <View
+        // style={[styles.description, { overflowWrap: 'break-word' }]}
+        >
+          <PostContent content={content} pRefs={pRefs} />
+          <Text style={[styles.description]}>{post.tags.map((tag) => `#${tag} `)}</Text>
+        </View>
       </View>
 
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { embed: true })}>
           {userData?.picture ? (
-            <Avatar.Image source={userData?.picture as AvatarImageSource} size={46} style={styles.avatar} />
+            <Avatar.Image source={{ uri: userData?.picture}} size={46} style={styles.avatar} />
           ) : (
             <Avatar.Icon icon="account" size={46} style={styles.avatar} />
           )}
@@ -165,12 +145,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
-    textShadow: '3px 3px black',
+    // textShadow: '3px 3px black',
+shadowColor: 'black',
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        // iOS
+        shadowOffset: {
+            width: 0,            // These can't both be 0
+            height: 1,           // i.e. the shadow has to be offset in some way
+        },
+        // Android
+        shadowOffset: {
+            width: 0,            // Same rules apply from above
+            height: 1,           // Can't both be 0
+        },
   },
   description: {
     marginTop: 10,
     color: 'white',
-    textShadow: '3px 3px black',
+    // textShadow: '3px 3px black',
   },
   avatar: {
     height: 50,

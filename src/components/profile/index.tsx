@@ -30,13 +30,11 @@ const Profile = ({ embed }: Props) => {
   if (!userData) {
     return <View style={styles.container}></View>;
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <ProfileNavBar user={userData || ({} as User)} />
-      <ScrollView>
-        <ProfileHeader user={userData || ({} as User)} />
-        <ProfilePostList posts={userPosts} />
-      </ScrollView>
+      <ProfilePostList posts={userPosts} user={userData} />
     </SafeAreaView>
   );
 };

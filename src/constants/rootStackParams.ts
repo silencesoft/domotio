@@ -6,4 +6,5 @@ export type RootStackParamList = {
   Profile: { embed?: boolean };
   Feed: { currentItem: number; profile: boolean };
   FeedItem: { currentItem: number; profile: boolean };
+  FeedNavigator: { currentItem: number; profile: boolean };
 };

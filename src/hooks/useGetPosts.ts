@@ -11,9 +11,10 @@ import { postsAtom, profilePostsAtom, tagsAtom, userContactsAtom } from 'src/sta
 type Props = {
   filter?: Filter;
   author?: boolean;
+  newPage?: boolean;
 };
 
-export const useGetPosts = ({ filter = defaultFilter, author = false }: Props) => {
+export const useGetPosts = ({ filter = defaultFilter, author = false, newPage = false }: Props) => {
   const [posts, setPosts] = useAtom(postsAtom);
   const [authorPosts, setAuthorPosts] = useAtom(profilePostsAtom);
   const setTags = useSetAtom(tagsAtom);
@@ -27,7 +28,6 @@ export const useGetPosts = ({ filter = defaultFilter, author = false }: Props) =
       limit: 10,
     },
   };
-  const page = 0;
   // setFilter(filter);
 
   if (filter?.type) {
@@ -98,9 +98,9 @@ export const useGetPosts = ({ filter = defaultFilter, author = false }: Props) =
     if (!isLoading) {
       if (data.length) {
         if (!author) {
-          setPosts([...(page === 0 ? [] : posts), ...data]);
+          setPosts([...posts, ...data]);
         } else {
-          setAuthorPosts([...(page === 0 ? [] : authorPosts), ...data]);
+          setAuthorPosts([...authorPosts, ...data]);
         }
       }
     }

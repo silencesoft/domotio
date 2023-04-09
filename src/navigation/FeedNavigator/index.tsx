@@ -10,7 +10,7 @@ const { Screen, Navigator } = createMaterialTopTabNavigator();
 const FeedNavigator = (props: Props) => {
   return (
     <Navigator initialRouteName="Feed" tabBar={() => <></>}>
-      <Screen name="Feed" component={FeedScreen} />
+      <Screen name="Feed" component={FeedScreen} initialParams={{}} />
       <Screen name="Profile" component={ProfileScreen} initialParams={{ embed: true }} />
     </Navigator>
   );
