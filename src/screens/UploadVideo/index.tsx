@@ -4,18 +4,48 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
+import { getEventHash, getPublicKey, nip19, signEvent, verifySignature, Event as NostrEvent } from 'nostr-tools';
+import { dateToUnix, useNostr } from 'nostr-react';
+import { useAtomValue } from 'jotai';
+import { ResizeMode, Video } from 'expo-av';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
+import { pubKeyAtom } from 'src/state/user';
 
 interface Props extends StackScreenProps<RootStackParamList, 'UploadVideo'> {}
 
 const UploadVideoScreen = ({ route }: Props) => {
   const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
   const [requestRunning, setRequestRunning] = useState(false);
   const navigation = useNavigation();
+  const id = route?.params?.id;
+  const [play, setPlay] = useState(false);
 
-  const handleSavePost = () => {
+  const handleSavePost = async () => {
     setRequestRunning(true);
+
+    const pubkey = useAtomValue(pubKeyAtom);
+
+    const tagsList = tags.split(',');
+    const date = dateToUnix();
+ 
+    let event: NostrEvent = {
+      content: description,
+      kind: 30024,
+      created_at: date,
+      pubkey: pubkey || '',
+      id: '',
+      sig: '',
+      tags: [
+        ['image', route.params.sourceThumb || ''],
+        ['published_at', id !== '0' ? /* posts[0].published_at.toString() */ '' : date.toString()],
+      ],
+    };
+
+    tagsList.forEach((tag: string) => {
+      event.tags.push(['t', tag.trim()]);
+    });
   };
 
   if (requestRunning) {
@@ -36,7 +66,45 @@ const UploadVideoScreen = ({ route }: Props) => {
           onChangeText={(text) => setDescription(text)}
           placeholder="Describe your video"
         />
+      </View>
+      <View style={styles.formContainer}>
+        <TextInput
+	  style={styles.inputText}
+	  onChangeText={(text) => setTags(text)}
+	  placeholder="Tags, comma separated"
+	  />
+      </View>
+      <View>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => setPlay(!play)}
+      >
+        {play ?
+	  <Video
+          style={styles.mediaPreview}
+          resizeMode={ResizeMode.COVER}
+          shouldPlay={true}
+          isLooping
+          usePoster
+          posterSource={{ uri: route.params.source }}
+          posterStyle={{ resizeMode: 'cover', height: '100%' }}
+          source={{ uri: route.params.source }}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+	  videoStyle={{
+            height: '100%',
+            width: 'auto',
+            marginTop: 0,
+            marginLeft: 'auto',
+            marginBottom: 0,
+            marginRight: 'auto',
+          }}
+          />
+	  :
         <Image style={styles.mediaPreview} source={{ uri: route.params.source }} />
+        }
+        </TouchableOpacity>
       </View>
       <View style={styles.spacer} />
       <View style={styles.buttonsContainer}>
@@ -86,7 +154,11 @@ const styles = StyleSheet.create({
   mediaPreview: {
     aspectRatio: 9 / 16,
     backgroundColor: 'black',
-    width: 60,
+    width: 250,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   cancelButton: {
     alignItems: 'center',

@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Remark } from 'react-remark';
 import { nip19 } from 'nostr-tools';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 
-import { Refs } from 'src/interfaces/post/post';
+
 import { useUpdateContent } from 'src/hooks/useUpdateContent';
+import { Refs } from 'src/interfaces/post/post';
 
 type Props = {
   content: string;
   pRefs: Refs[];
 };
 
-const PostContent = ({content, pRefs}: Props) => {
-  // const [reactContent, setMarkdownSource] = useRemark();
+const PostContent = ({ content, pRefs }: Props) => {
   pRefs?.forEach((pRef) => {
     const search = `#[${pRef.pos}]`;
 
@@ -37,20 +37,16 @@ const PostContent = ({content, pRefs}: Props) => {
     content = content.replace(profile, `[${user}](${profile})`);
 
     pRefs.push({ pos: 0, value: user.toString() });
-
   });
 
+  const [output, setOutput] = useState('');
 
-  content.replaceAll('\\n', "&nbsp; \\n\\n");
-
-  const [output, setOutput] = useState(content);
-
-  useUpdateContent({ output, setOutput, pRefs });
+  useUpdateContent({ output: content.toString(), setOutput, pRefs });
 
   return (
-    <>
-      <Text style={styles.description}><Remark>{output}</Remark></Text>
-    </>
+    <View style={styles.description}>
+      <Markdown style={{ body: { color: 'white' } }}>{output.trim()}</Markdown>
+    </View>
   );
 };
 
@@ -58,9 +54,8 @@ export default PostContent;
 
 const styles = StyleSheet.create({
   description: {
-    marginTop: 10,
+    // marginTop: 10,
     color: 'white',
     // textShadow: '3px 3px black',
   },
 });
-

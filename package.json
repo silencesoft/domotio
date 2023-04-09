@@ -34,6 +34,7 @@
     "react-dom": "18.2.0",
     "react-native": "0.71.6",
     "react-native-gesture-handler": "~2.9.0",
+    "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-mmkv": "^2.6.3",
     "react-native-pager-view": "6.1.2",
     "react-native-paper": "^5.5.2",
@@ -43,7 +44,6 @@
     "react-native-screens": "~3.20.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-web": "~0.18.10",
-    "react-remark": "^2.1.0",
     "text-encoding": "^0.7.0"
   },
   "devDependencies": {

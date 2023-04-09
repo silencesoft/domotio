@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { Animated, Dimensions, Easing, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
-import { useRemark } from 'react-remark';
 import React from 'react';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
@@ -58,13 +57,11 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ maxWidth: '50%' }}>
+      <View style={{ maxWidth: '65%' }}>
         <Text style={styles.displayName}>@{userData?.name}</Text>
-        <View
-        // style={[styles.description, { overflowWrap: 'break-word' }]}
-        >
-          <PostContent content={content} pRefs={pRefs} />
-          <Text style={[styles.description]}>{post.tags.map((tag) => `#${tag} `)}</Text>
+        <View>
+           <PostContent content={content} pRefs={pRefs} />
+          <Text style={[styles.description]}>{post.tags.map((tag: string) => `#${tag} `)}</Text>
         </View>
       </View>
 
@@ -101,7 +98,7 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
         >
           {userData?.picture ? (
             <Avatar.Image
-              source={userData?.picture as AvatarImageSource}
+              source={{ uri: userData?.picture }}
               size={35}
               style={{
                 width: 35,
@@ -133,7 +130,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     position: 'absolute',
     zIndex: 999,
-    bottom: Platform.OS === 'web' ? 100 : 0,
+    bottom: Platform.OS === 'web' ? 100 : 80,
     paddingLeft: 20,
     paddingBottom: 20,
     paddingRight: 10,
@@ -146,19 +143,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     // textShadow: '3px 3px black',
-shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        // iOS
-        shadowOffset: {
-            width: 0,            // These can't both be 0
-            height: 1,           // i.e. the shadow has to be offset in some way
-        },
-        // Android
-        shadowOffset: {
-            width: 0,            // Same rules apply from above
-            height: 1,           // Can't both be 0
-        },
   },
   description: {
     marginTop: 10,

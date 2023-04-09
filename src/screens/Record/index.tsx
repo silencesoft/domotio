@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     flexDirection: 'row',
-    marginBottom: 30,
+    marginBottom: 120,
     width: '100%',
   },
   recordButtonContainer: {
