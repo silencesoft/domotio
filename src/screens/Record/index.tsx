@@ -41,8 +41,10 @@ const RecordScreen = (props: Props) => {
         if (videoRecordPromise) {
           const data = await videoRecordPromise;
           const source = data.uri;
+	  const type = '';
+	  const name = source.substring(source.lastIndexOf('/') + 1);
           let sourceThumb = await generateThumbnail(source);
-          navigation.navigate('UploadVideo', { source, sourceThumb });
+          navigation.navigate('UploadVideo', { source, sourceThumb, type, name });
         }
       } catch (error) {
         console.warn(error);
@@ -66,8 +68,11 @@ const RecordScreen = (props: Props) => {
 
     if (!result.canceled) {
       const uri = result.assets[0].uri;
+      const type = result.assets[0].type;
+      const name = uri.substring(uri.lastIndexOf('/') + 1);
+      console.log(result.assets[0], name);
       let sourceThumb = await generateThumbnail(uri);
-      navigation.navigate('UploadVideo', { source: uri, sourceThumb });
+      navigation.navigate('UploadVideo', { source: uri, sourceThumb, type, name });
     }
   };
 

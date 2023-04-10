@@ -1,16 +1,18 @@
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import { ResizeMode, Video } from 'expo-av';
+import { useAtomValue } from 'jotai';
+import { dateToUnix, useNostr } from 'nostr-react';
+import { Event as NostrEvent, getEventHash, signEvent, verifySignature } from 'nostr-tools';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
-import { getEventHash, getPublicKey, nip19, signEvent, verifySignature, Event as NostrEvent } from 'nostr-tools';
-import { dateToUnix, useNostr } from 'nostr-react';
-import { useAtomValue } from 'jotai';
-import { ResizeMode, Video } from 'expo-av';
+import * as mime from 'mime';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
-import { pubKeyAtom } from 'src/state/user';
+import { loginKeyAtom, pubKeyAtom } from 'src/state/user';
+import { saveMedia } from 'src/services/saveMedia';
 
 interface Props extends StackScreenProps<RootStackParamList, 'UploadVideo'> {}
 
@@ -20,32 +22,83 @@ const UploadVideoScreen = ({ route }: Props) => {
   const [requestRunning, setRequestRunning] = useState(false);
   const navigation = useNavigation();
   const id = route?.params?.id;
+
   const [play, setPlay] = useState(false);
+  const pubkey = useAtomValue(pubKeyAtom);
+  const loginKey = useAtomValue(loginKeyAtom);
+  const { publish } = useNostr();
 
   const handleSavePost = async () => {
     setRequestRunning(true);
 
-    const pubkey = useAtomValue(pubKeyAtom);
+    const video = await saveMedia(route.params.source, mime.getType(route.params.source) || '', route.params.name);
+    const image = route?.params?.sourceThumb ?
+      await saveMedia(route.params.sourceThumb || '', mime.getType(route.params.sourceThumb) || '', 'screenshot.jpg') :
+      [];
 
+    if (!image[0] && !video[0]) {
+      setRequestRunning(false);
+      return;
+    }
+    const now = new Date();
     const tagsList = tags.split(',');
-    const date = dateToUnix();
- 
-    let event: NostrEvent = {
-      content: description,
+    const date = dateToUnix(now);
+    let content = description;
+
+    const event: NostrEvent = {
+      content: content,
       kind: 30024,
       created_at: date,
       pubkey: pubkey || '',
       id: '',
       sig: '',
       tags: [
-        ['image', route.params.sourceThumb || ''],
-        ['published_at', id !== '0' ? /* posts[0].published_at.toString() */ '' : date.toString()],
+        ['image', image[0] || ''],
+        ['published_at', id ? /* posts[0].published_at.toString() */ '' : date.toString()],
       ],
     };
 
     tagsList.forEach((tag: string) => {
       event.tags.push(['t', tag.trim()]);
     });
+
+    event.tags.push(['r', video[0], mime.getType(video[0]) || '']);
+
+    const profiles = content.match(/@npub\w+/gi);
+
+    const newTags: any = [];
+
+    profiles?.forEach((profile) => {
+      const user = profile.replace('@', '');
+
+      content = content.replace(profile, `nostr:${user}`);
+    });
+
+    if (profiles?.length) {
+      event.content = content;
+      event.tags = [...event.tags, ...newTags];
+    }
+
+    try {
+      event.id = getEventHash(event);
+      event.sig = signEvent(event, loginKey);
+
+      publish(event);
+
+      const ok = verifySignature(event);
+
+      if (ok) {
+        setRequestRunning(false);
+        navigation.navigate('Profile');
+      } else {
+        // setError('title', { message: 'Error in server' });
+        setRequestRunning(false);
+      }
+    } catch (e) {
+      console.log({ e });
+      setRequestRunning(false);
+      // setError('title', { message: 'Error in server or event signature' });
+    }
   };
 
   if (requestRunning) {
@@ -69,41 +122,38 @@ const UploadVideoScreen = ({ route }: Props) => {
       </View>
       <View style={styles.formContainer}>
         <TextInput
-	  style={styles.inputText}
-	  onChangeText={(text) => setTags(text)}
-	  placeholder="Tags, comma separated"
-	  />
+          style={styles.inputText}
+          onChangeText={(text) => setTags(text)}
+          placeholder="Tags, comma separated"
+        />
       </View>
       <View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => setPlay(!play)}
-      >
-        {play ?
-	  <Video
-          style={styles.mediaPreview}
-          resizeMode={ResizeMode.COVER}
-          shouldPlay={true}
-          isLooping
-          usePoster
-          posterSource={{ uri: route.params.source }}
-          posterStyle={{ resizeMode: 'cover', height: '100%' }}
-          source={{ uri: route.params.source }}
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-	  videoStyle={{
-            height: '100%',
-            width: 'auto',
-            marginTop: 0,
-            marginLeft: 'auto',
-            marginBottom: 0,
-            marginRight: 'auto',
-          }}
-          />
-	  :
-        <Image style={styles.mediaPreview} source={{ uri: route.params.source }} />
-        }
+        <TouchableOpacity activeOpacity={0.8} onPress={() => setPlay(!play)}>
+          {play ? (
+            <Video
+              style={styles.mediaPreview}
+              resizeMode={ResizeMode.COVER}
+              shouldPlay={true}
+              isLooping
+              usePoster
+              posterSource={{ uri: route.params.source }}
+              posterStyle={{ resizeMode: 'cover', height: '100%' }}
+              source={{ uri: route.params.source }}
+              rate={1.0}
+              volume={1.0}
+              isMuted={false}
+              videoStyle={{
+                height: '100%',
+                width: 'auto',
+                marginTop: 0,
+                marginLeft: 'auto',
+                marginBottom: 0,
+                marginRight: 'auto',
+              }}
+            />
+          ) : (
+            <Image style={styles.mediaPreview} source={{ uri: route.params.source }} />
+          )}
         </TouchableOpacity>
       </View>
       <View style={styles.spacer} />

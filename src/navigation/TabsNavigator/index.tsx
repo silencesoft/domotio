@@ -23,6 +23,7 @@ const TabsNavigator = (props: Props) => {
         name="FeedNavigator"
         component={FeedNavigator}
         options={{
+          tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
 	}}
       />
@@ -37,6 +38,7 @@ const TabsNavigator = (props: Props) => {
         name="Add"
         component={RecordScreen}
         options={{
+          tabBarLabel: 'Create',
           tabBarIcon: ({ color }) => <Feather name="plus-square" size={24} color={color} />,
         }}
       />
@@ -51,6 +53,7 @@ const TabsNavigator = (props: Props) => {
         name="Profile"
         component={ProfileScreen}
         options={{
+          tabBarLabel: 'Profile',
           tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
         }}
         initialParams={{ embed: false }}
