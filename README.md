@@ -10,6 +10,10 @@ cd domotio
 yarn android/ios
 ```
 
+## Code
+
+Some code was taken from [https://github.com/SimCoderYoutube](SimCoderYoutube) project: [https://github.com/SimCoderYoutube/TiktokClone/tree/main](TiktokClone)
+
 ## Thanks
 
 My Nostr Public key: [npub1gcmpunjrue2aq5um7qgnp4p6uxarlxw2z6djehaf0emxjf6gr9us548zdf](nostr:npub1gcmpunjrue2aq5um7qgnp4p6uxarlxw2z6djehaf0emxjf6gr9us548zdf)
