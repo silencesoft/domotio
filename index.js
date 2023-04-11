@@ -2,7 +2,9 @@ import { registerRootComponent } from 'expo';
 
 import * as encoding from 'text-encoding';
 
-global.Buffer = global.Buffer || require('buffer').Buffer;
+import 'react-native-get-random-values';
+
+global.Buffer = global.Buffer || require('safe-buffer').Buffer;
 
 if (typeof btoa === 'undefined') {
   global.btoa = function (str) {

@@ -4,7 +4,7 @@ export const saveMedia = async (media: string, type: string, name: string) => {
   // const file = await fetch(media).then((response) => response.blob());
   const formData = new FormData();
 
-  const file = new Blob([media], { type });
+  // const file = new Blob([media], { type });
 
   formData.append('fileToUpload', {
      uri: media,
