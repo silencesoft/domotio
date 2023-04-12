@@ -71,8 +71,8 @@ const RecordScreen = (props: Props) => {
       const type = result.assets[0].type;
       const name = uri.substring(uri.lastIndexOf('/') + 1);
       console.log(result.assets[0], name);
-      let sourceThumb = await generateThumbnail(uri);
-      navigation.navigate('UploadVideo', { source: uri, sourceThumb, type, name });
+      const sourceThumb = await generateThumbnail(uri);
+      navigation.navigate('UploadVideo', { source: uri, sourceThumb, type: type || '', name });
     }
   };
 
@@ -141,7 +141,14 @@ const RecordScreen = (props: Props) => {
       </View>
 
       <View style={styles.bottomBarContainer}>
-        <View style={{ flex: 1 }}></View>
+        <View style={{ flex: 1, alignItems: 'flex-end', }}>
+	  <TouchableOpacity
+	    onPress={() => {
+              navigation.navigate('UploadVideo', { source: '', sourceThumb: '', type: '', name: '' });
+	    }}>
+	    <Feather name="link-2" size={48} color={'white'} />
+	  </TouchableOpacity>
+	</View>
         <View style={styles.recordButtonContainer}>
           <TouchableOpacity
             disabled={!isCameraReady}
