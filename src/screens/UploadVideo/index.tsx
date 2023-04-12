@@ -7,7 +7,7 @@ import { dateToUnix, useNostr } from 'nostr-react';
 import { Event as NostrEvent, getEventHash, signEvent, verifySignature } from 'nostr-tools';
 import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { ActivityIndicator, Snackbar, Text } from 'react-native-paper';
 import * as mime from 'mime';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
@@ -23,6 +23,7 @@ const UploadVideoScreen = ({ route }: Props) => {
   const [externalSourceThumb, setExternalSourceThumb] = useState('');
   const [tags, setTags] = useState('');
   const [requestRunning, setRequestRunning] = useState(false);
+  const [error, setError] = React.useState('');
   const navigation = useNavigation();
   const id = route?.params?.id;
   const source = route?.params?.source;
@@ -123,6 +124,10 @@ const UploadVideoScreen = ({ route }: Props) => {
     );
   }
 
+  const onToggleSnackBar = () => setError('');
+
+  const onDismissSnackBar = () => setError('');
+
   const isVideoByURL = (url: string) => {
     if (!url) return false;
 
@@ -142,10 +147,18 @@ const UploadVideoScreen = ({ route }: Props) => {
 
   useEffect(() => {
     const createThumb = async () => {
-      const sourceThumb = await generateThumbnail(externalSource);
+      try {
+        const sourceThumb = await generateThumbnail(externalSource);
 
-      if (sourceThumb) {
-        setExternalSourceThumb(sourceThumb);
+        if (sourceThumb) {
+          setExternalSourceThumb(sourceThumb);
+        }
+      } catch(e: unknown) {
+        if (typeof e === "string") {
+          setError(e)
+	} else if (e instanceof Error) {
+          setError(e.message)
+        }
       }
     }
 
@@ -224,6 +237,19 @@ const UploadVideoScreen = ({ route }: Props) => {
           <Text style={styles.postButtonText}>Post</Text>
         </TouchableOpacity>
       </View>
+      {!!error && 
+        <Snackbar
+          visible={!!error}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: 'Undo',
+            onPress: () => {
+              // Do something
+            },
+          }}>
+          {error}
+        </Snackbar>
+      }
     </View>
   );
 };
