@@ -24,7 +24,7 @@ const MainNavigator = (props: Props) => {
       <User pubkey={pubKey} />
       <Stack.Navigator>
         {!pubKey && <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />}
-        {pubKey && userProfile?.name && (
+        {pubKey && userProfile?.name ? (
           <>
             <Stack.Screen name="Home" component={TabsNavigator} options={{ headerShown: false }} />
             <Stack.Screen
@@ -35,10 +35,10 @@ const MainNavigator = (props: Props) => {
             />
             <Stack.Screen name="FeedItem" component={FeedScreen} options={{ headerShown: false }} />
           </>
-        )}
-	{pubKey && !userProfile?.name &&
+        ) : <></>}
+	{pubKey && !userProfile?.name ?
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-	}
+	: <></>}
       </Stack.Navigator>
     </>
   );
