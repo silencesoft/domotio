@@ -8,12 +8,16 @@ import { Animated, Dimensions, Easing, Platform, StyleSheet, Text, TouchableOpac
 import { Avatar } from 'react-native-paper';
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
 import React from 'react';
+import { useAtomValue } from 'jotai';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
 import { useUpdateContent } from 'src/hooks/useUpdateContent';
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
 import PostContent from './content';
+import PostLikes from './likes';
+import { useGetPostValues } from 'src/hooks/useGetPostValues';
+import { loginKeyAtom, pubKeyAtom } from 'src/state/user';
 
 type Props = {
   user: User;
@@ -25,18 +29,10 @@ type feedScreenProp = StackNavigationProp<RootStackParamList, 'Feed'>;
 
 const PostSingleOverlay = ({ user, post, play }: Props) => {
   const navigation = useNavigation<feedScreenProp>();
-  const [currentLikeState, setCurrentLikeState] = useState({
-    state: false,
-    counter: post.likesCount,
-  });
   const { data: userData } = useProfile({
     pubkey: post.author,
   });
   const spinValue = new Animated.Value(0);
-
-  const handleUpdateLike = (currentLikeState: { state: boolean; counter: number }): void => {
-    throw new Error('Function not implemented.');
-  };
 
   Animated.loop(
     Animated.timing(spinValue, {
@@ -74,10 +70,7 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={() => handleUpdateLike(currentLikeState)}>
-          <Ionicons color="white" size={40} name={currentLikeState.state ? 'heart' : 'heart-outline'} />
-          <Text style={styles.actionButtonText}>{currentLikeState.counter}</Text>
-        </TouchableOpacity>
+        <PostLikes author={post.author} note={post.id} />
 
         <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
           <Ionicons color="white" size={40} name={'chatbubble'} />

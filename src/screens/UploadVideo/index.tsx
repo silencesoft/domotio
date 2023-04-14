@@ -23,7 +23,7 @@ const UploadVideoScreen = ({ route }: Props) => {
   const [externalSourceThumb, setExternalSourceThumb] = useState('');
   const [tags, setTags] = useState('');
   const [requestRunning, setRequestRunning] = useState(false);
-  const [error, setError] = React.useState('');
+  const [error, setError] = useState('');
   const navigation = useNavigation();
   const id = route?.params?.id;
   const source = route?.params?.source;

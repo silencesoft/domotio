@@ -6,7 +6,7 @@ type Props = {};
 const HomeScreen = (props: Props) => {
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>&nbsp;</Text>
     </View>
   );
 };

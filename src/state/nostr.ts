@@ -4,11 +4,12 @@ import { defaultRelays } from 'src/constants/defaultValues';
 import { Filter } from 'src/interfaces/nostr/filter';
 import { Relay } from 'src/interfaces/nostr/relay';
 import { Post } from 'src/interfaces/post/post';
+import { User } from 'src/interfaces/user/user';
 
 export const relaysAtom = atom<Relay[]>(defaultRelays);
 export const userRelaysAtom = atom(false);
 
-export const userProfileAtom = atom<any>({});
+export const userProfileAtom = atom<User>({} as User);
 export const postsAtom = atom<Post[]>([]);
 export const userContactsAtom = atom<any[]>([]);
 export const userLoadedContactsAtom = atom(false);

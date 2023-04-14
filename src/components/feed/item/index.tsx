@@ -5,6 +5,7 @@ import { Dimensions, View } from 'react-native';
 import PostSingle from 'src/components/post';
 import { postsAtom, profilePostsAtom } from 'src/state/nostr';
 import { currentPostAuthorAtom } from 'src/state/post';
+import { useGetPosts } from 'src/hooks/useGetPosts';
 
 const RenderItem = ({ active, index, profile }: { active: number; index: number; profile: boolean }) => {
   const setCurrentPostAuthor = useSetAtom(currentPostAuthorAtom);

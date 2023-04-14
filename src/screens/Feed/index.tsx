@@ -7,6 +7,7 @@ import FeedList from 'src/components/feed';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
 import { userContactsAtom } from 'src/state/nostr';
+import { useGetPosts } from 'src/hooks/useGetPosts';
 
 interface Props extends StackScreenProps<RootStackParamList, 'Feed'> {}
 
@@ -14,6 +15,10 @@ const FeedScreen = ({ route, navigation }: Props) => {
   const userContacts = useAtomValue(userContactsAtom);
   const profile = route?.params?.profile;
   const currentItem = route?.params?.currentItem;
+
+  useGetPosts({});
+
+  if (!userContacts) return <></>;
 
   return (
     <View style={styles.container}>

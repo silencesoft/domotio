@@ -16,10 +16,12 @@ const Feed = ({ profile = false, currentItem = 0 }: Props) => {
   const posts = useAtomValue(postsAtom);
   const profilePosts = useAtomValue(profilePostsAtom);
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const [active, setActive] = useState(currentItem < posts.length ? currentItem : 0);
   const count = profile ? profilePosts.length : posts.length;
+  const [active, setActive] = useState(currentItem < count ? currentItem : 0);
 
-  useGetPosts({});
+  if (!posts.length) {
+    return <></>;
+  }
 
   return (
     <View style={styles.container}>

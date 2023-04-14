@@ -27,7 +27,12 @@ export const useGetContacts = ({ pubkey }: Props) => {
 
     events.forEach((event) => {
       event.tags.forEach((tag) => {
-        data.push(tag[1]);
+        const current = data.includes(tag[1]);
+        const exist = userContacts.includes(tag[1]);
+
+        if (!exist && !current) {
+          data.push(tag[1]);
+        }
       });
 
       if (!isLoading) {

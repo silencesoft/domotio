@@ -15,8 +15,9 @@ type Props = {
 const PostContent = ({ content, pRefs }: Props) => {
   pRefs?.forEach((pRef) => {
     const search = `#[${pRef.pos}]`;
+    const value = pRef.value.match(/[0-9A-Fa-f]{6}/g) ? nip19.npubEncode(pRef.value) : pRef.value; 
 
-    content = content.replace(search, `[${pRef.value}](nostr:${nip19.npubEncode(pRef.value)})`);
+    content = content.replace(search, `[${pRef.value}](nostr:${value})`);
   });
 
   const profiles = content.match(/npub\w+/gi);
@@ -24,19 +25,33 @@ const PostContent = ({ content, pRefs }: Props) => {
   profiles?.forEach((profile) => {
     const user = nip19.decode(profile.replace('@', ''));
 
-    content = content.replace(profile, `[${user.data}](nostr:${profile.replace('@', '')})`);
+    content = content.replaceAll(profile, `[${user.data}](nostr:${profile.replace('@', '')})`);
 
-    pRefs.push({ pos: 0, value: user.data.toString() });
+    const exist = pRefs.filter((pRef) => pRef.value === user.data.toString());
+
+    if (!exist.length) {
+      pRefs.push({ pos: 0, value: user.data.toString() });
+    }
   });
 
   const profilesNip = content.match(/nostr:\w+/gi);
 
   profilesNip?.forEach((profile) => {
-    const user = profile.replace('nostr:', '');
+    let user;
 
-    content = content.replace(profile, `[${user}](${profile})`);
+    if (profile.match(/[0-9A-Fa-f]{6}/g)) {
+      user = profile.replace('nostr:', '');
+    } else {
+      user = nip19.decode(profile.replace('nostr:', ''));
+    }
 
-    pRefs.push({ pos: 0, value: user.toString() });
+    content = content.replaceAll(profile, `[${user}](${profile})`);
+
+    const exist = pRefs.filter((pRef) => pRef.value === user.toString());
+
+    if (!exist.length) {
+      pRefs.push({ pos: 0, value: user.toString() });
+    }
   });
 
   const [output, setOutput] = useState('');
