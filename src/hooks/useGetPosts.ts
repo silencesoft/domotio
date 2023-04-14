@@ -70,7 +70,7 @@ export const useGetPosts = ({ filter = defaultFilter, author = false, newPage = 
         ? posts.some((post) => post.id === event.id)
         : authorPosts.some((post) => post.id === event.id);
 
-      if (!exist)
+      if (!exist) {
         data.push({
           id: event.id,
           content: event.content,
@@ -89,6 +89,7 @@ export const useGetPosts = ({ filter = defaultFilter, author = false, newPage = 
             return { pos: parseInt(pRef[2]), value: pRef[1].toLowerCase() };
           }),
         });
+      }
     });
 
     if (!author) {

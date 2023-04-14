@@ -3,16 +3,17 @@ import { useNavigation } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ResizeMode, Video } from 'expo-av';
 import { useAtomValue } from 'jotai';
+import * as mime from 'mime';
 import { dateToUnix, useNostr } from 'nostr-react';
 import { Event as NostrEvent, getEventHash, signEvent, verifySignature } from 'nostr-tools';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Snackbar, Text } from 'react-native-paper';
-import * as mime from 'mime';
+import { NostrKind } from 'src/constants/nostr';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
-import { loginKeyAtom, pubKeyAtom } from 'src/state/user';
 import { saveMedia } from 'src/services/saveMedia';
+import { loginKeyAtom, pubKeyAtom } from 'src/state/user';
 import { generateThumbnail } from 'src/utils/generateThumbnail';
 
 interface Props extends StackScreenProps<RootStackParamList, 'UploadVideo'> {}
@@ -40,14 +41,18 @@ const UploadVideoScreen = ({ route }: Props) => {
 
     if (source) {
       video = await saveMedia(route.params.source, mime.getType(route.params.source) || '', route.params.name);
-      image = route?.params?.sourceThumb ?
-      await saveMedia(route.params.sourceThumb || '', mime.getType(route.params.sourceThumb) || '', 'screenshot.jpg') :
-      [];
+      image = route?.params?.sourceThumb
+        ? await saveMedia(
+            route.params.sourceThumb || '',
+            mime.getType(route.params.sourceThumb) || '',
+            'screenshot.jpg'
+          )
+        : [];
     } else {
       video.push(externalSource);
-      image = externalSourceThumb ?
-        await saveMedia(externalSourceThumb || '', mime.getType(externalSourceThumb) || '', 'screenshot.jpg') :
-        [];
+      image = externalSourceThumb
+        ? await saveMedia(externalSourceThumb || '', mime.getType(externalSourceThumb) || '', 'screenshot.jpg')
+        : [];
     }
 
     if (!image[0] && !video[0]) {
@@ -62,7 +67,7 @@ const UploadVideoScreen = ({ route }: Props) => {
 
     const event: NostrEvent = {
       content: content,
-      kind: 30024,
+      kind: NostrKind.ShortVideo,
       created_at: date,
       pubkey: pubkey || '',
       id: '',
@@ -133,17 +138,17 @@ const UploadVideoScreen = ({ route }: Props) => {
 
     const filename = url?.split('/').pop().split('#')[0].split('?')[0];
 
-    if(filename) {
-        const ext = filename.split('.').pop();
-        const mimeType = mime.getType(ext);
+    if (filename) {
+      const ext = filename.split('.').pop();
+      const mimeType = mime.getType(ext);
 
-        if (!mimeType) return false;
+      if (!mimeType) return false;
 
-        return mimeType?.startsWith('video');
+      return mimeType?.startsWith('video');
     }
 
     return false;
-  }
+  };
 
   useEffect(() => {
     const createThumb = async () => {
@@ -153,14 +158,14 @@ const UploadVideoScreen = ({ route }: Props) => {
         if (sourceThumb) {
           setExternalSourceThumb(sourceThumb);
         }
-      } catch(e: unknown) {
-        if (typeof e === "string") {
-          setError(e)
-	} else if (e instanceof Error) {
-          setError(e.message)
+      } catch (e: unknown) {
+        if (typeof e === 'string') {
+          setError(e);
+        } else if (e instanceof Error) {
+          setError(e.message);
         }
       }
-    }
+    };
 
     if (externalSource && isVideoByURL(externalSource)) {
       createThumb();
@@ -169,15 +174,17 @@ const UploadVideoScreen = ({ route }: Props) => {
 
   return (
     <View style={styles.container}>
-      {!source && <View style={styles.formContainer}>
-        <TextInput
-          style={styles.inputText}
-          maxLength={150}
-          multiline
-          onChangeText={(text) => setExternalSource(text)}
-          placeholder="External Source"
-        />
-      </View>}
+      {!source && (
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.inputText}
+            maxLength={150}
+            multiline
+            onChangeText={(text) => setExternalSource(text)}
+            placeholder="External Source"
+          />
+        </View>
+      )}
       <View style={styles.formContainer}>
         <TextInput
           style={styles.inputText}
@@ -195,35 +202,46 @@ const UploadVideoScreen = ({ route }: Props) => {
         />
       </View>
       <View>
-        {(!!source || !!externalSource) && <TouchableOpacity activeOpacity={0.8} onPress={() => setPlay(!play)}>
-          {play ? (
-            <Video
-              style={styles.mediaPreview}
-              resizeMode={ResizeMode.COVER}
-              shouldPlay={true}
-              isLooping
-              usePoster
-              posterSource={{ uri: route.params.source || externalSource }}
-              posterStyle={{ resizeMode: 'cover', height: '100%' }}
-              source={{ uri: route.params.source || externalSource }}
-              rate={1.0}
-              volume={1.0}
-              isMuted={false}
-              videoStyle={{
-                height: '100%',
-                width: 'auto',
-                marginTop: 0,
-                marginLeft: 'auto',
-                marginBottom: 0,
-                marginRight: 'auto',
-              }}
-            />
-          ) : (
-            <>{!!route.params.sourceThumb || !!externalSourceThumb ?
-	      <Image style={styles.mediaPreview} source={{ uri: route.params.sourceThumb || externalSourceThumb }} /> : 
-	      <View style={{alignItems: 'center'}}><Feather name="alert-circle" size={48} color="black" /></View>}</>
-          )}
-        </TouchableOpacity>}
+        {(!!source || !!externalSource) && (
+          <TouchableOpacity activeOpacity={0.8} onPress={() => setPlay(!play)}>
+            {play ? (
+              <Video
+                style={styles.mediaPreview}
+                resizeMode={ResizeMode.COVER}
+                shouldPlay={true}
+                isLooping
+                usePoster
+                posterSource={{ uri: route.params.source || externalSource }}
+                posterStyle={{ resizeMode: 'cover', height: '100%' }}
+                source={{ uri: route.params.source || externalSource }}
+                rate={1.0}
+                volume={1.0}
+                isMuted={false}
+                videoStyle={{
+                  height: '100%',
+                  width: 'auto',
+                  marginTop: 0,
+                  marginLeft: 'auto',
+                  marginBottom: 0,
+                  marginRight: 'auto',
+                }}
+              />
+            ) : (
+              <>
+                {!!route.params.sourceThumb || !!externalSourceThumb ? (
+                  <Image
+                    style={styles.mediaPreview}
+                    source={{ uri: route.params.sourceThumb || externalSourceThumb }}
+                  />
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <Feather name="alert-circle" size={48} color="black" />
+                  </View>
+                )}
+              </>
+            )}
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.spacer} />
       <View style={styles.buttonsContainer}>
@@ -237,7 +255,7 @@ const UploadVideoScreen = ({ route }: Props) => {
           <Text style={styles.postButtonText}>Post</Text>
         </TouchableOpacity>
       </View>
-      {!!error && 
+      {!!error && (
         <Snackbar
           visible={!!error}
           onDismiss={onDismissSnackBar}
@@ -246,10 +264,11 @@ const UploadVideoScreen = ({ route }: Props) => {
             onPress: () => {
               // Do something
             },
-          }}>
+          }}
+        >
           {error}
         </Snackbar>
-      }
+      )}
     </View>
   );
 };
