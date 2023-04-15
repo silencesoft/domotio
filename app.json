@@ -3,6 +3,7 @@
     "name": "Domotio",
     "slug": "domotio",
     "version": "0.5.1",
+    "owner": "silencesoft",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
