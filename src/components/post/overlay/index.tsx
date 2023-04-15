@@ -2,22 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useProfile } from 'nostr-react';
-import { nip19 } from 'nostr-tools';
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Animated, Dimensions, Easing, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { AvatarImageSource } from 'react-native-paper/lib/typescript/src/components/Avatar/AvatarImage';
-import React from 'react';
-import { useAtomValue } from 'jotai';
 
 import { RootStackParamList } from 'src/constants/rootStackParams';
-import { useUpdateContent } from 'src/hooks/useUpdateContent';
 import { Post } from 'src/interfaces/post/post';
 import { User } from 'src/interfaces/user/user';
 import PostContent from './content';
+import PostZap from './lightning';
 import PostLikes from './likes';
-import { useGetPostValues } from 'src/hooks/useGetPostValues';
-import { loginKeyAtom, pubKeyAtom } from 'src/state/user';
 
 type Props = {
   user: User;
@@ -56,7 +50,7 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
       <View style={{ maxWidth: '65%' }}>
         <Text style={styles.displayName}>@{userData?.name}</Text>
         <View>
-           <PostContent content={content} pRefs={pRefs} />
+          <PostContent content={content} pRefs={pRefs} />
           <Text style={[styles.description]}>{post.tags.map((tag: string) => `#${tag} `)}</Text>
         </View>
       </View>
@@ -64,13 +58,15 @@ const PostSingleOverlay = ({ user, post, play }: Props) => {
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { embed: true })}>
           {userData?.picture ? (
-            <Avatar.Image source={{ uri: userData?.picture}} size={46} style={styles.avatar} />
+            <Avatar.Image source={{ uri: userData?.picture }} size={46} style={styles.avatar} />
           ) : (
             <Avatar.Icon icon="account" size={46} style={styles.avatar} />
           )}
         </TouchableOpacity>
 
         <PostLikes author={post.author} note={post.id} />
+
+        <PostZap nip={userData?.lud16} />
 
         <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
           <Ionicons color="white" size={40} name={'chatbubble'} />
