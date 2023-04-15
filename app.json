@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "domotio",
+    "name": "Domotio",
     "slug": "domotio",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "expo": {
       "plugins": [
         [
